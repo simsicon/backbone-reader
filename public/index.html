@@ -1,0 +1,41 @@
+<!doctype html>
+  <head>
+    <meta charset="utf-8">
+
+    <title>Backbone Reader</title>
+    <meta name="author" content="simsicon@gmail.com">
+
+    <link rel="stylesheet" href="stylesheets/screen.css" media="screen, projection">
+
+    <script src="javascripts/vendor/modernizr.min.js"></script>
+    <script src="javascripts/vendor/jquery-1.6.4.js"></script>
+    <script src="javascripts/vendor/underscore.js"></script>
+    <script src="javascripts/vendor/backbone.js"></script>
+    <script src="javascripts/reader.js"></script>
+
+    <script type="text/template" id="rss-template">
+      <button class="add">add</button>
+      <button class="read-more">read more</button>
+      <span class="title"><%= title %></span>
+      <span class="content-snippet"><%= contentSnippet %></span>
+	  <div class='items'></div>
+    </script>
+
+	<script type="text/template" id="item-template">
+      <span class="title"><%= title %></span>
+      <span class="content-snippet"><%= contentSnippet %></span>
+    </script>
+
+    <script type="application/javascript">
+      jQuery(function() {
+        //window.library.fetch();
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="container">
+    </div>
+  </body>
+</html>
+
