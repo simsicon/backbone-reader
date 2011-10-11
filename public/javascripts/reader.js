@@ -81,7 +81,7 @@
 		},
 
 		empty : function(){
-			$(this.el).empty();
+			$('#search-result').empty();
 		},
 
 		emptyItems : function(){
