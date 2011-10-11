@@ -26,13 +26,14 @@
 			
 			this.searchRSSAjax(text, function(data){
 				this.collection = new RssList();
-				$('#rss-list').empty();
 				_.each(data.entries, function(json, num){
 					var rss = new Rss({title : json.title, link : json.link, url : json.url, contentSnippet : json.contentSnippet});	
 					this.collection.add(rss);
-					var rssView = new RssView({model: rss});
-					$('#rss-list').append(rssView.render().el);						
 				});	
+				var rssListView = new RssListView({models:this.collection});
+				//$('#rss-list').empty();
+				rssListView.empty();
+				$('#container').append(rssListView.render().el);
 				
 			});
 			
@@ -61,18 +62,39 @@
 		template: _.template("<div id='search-result'><ul id='rss-list'></ul></div>"),
 
 		initialize: function(){
-			_.bindAll(this, 'render');
+			_.bindAll(this, 'render', 'readmoreCurrentRss');
+			this.options.models.bind('change:readmoreCurrentRss', this.readmoreCurrentRss);
 		},
 
 		render : function(){
 			$(this.el).html(this.template());
+			this.renderRssList();
 			return this;
 		},
 
-		renderRss : function(){
+		renderRssList : function(){
+			$rssList = this.$("#rss-list");
+			this.options.models.each(function(rss){
+				var rssView = new RssView({model: rss});
+				$rssList.append(rssView.render().el);						
+			});
+		},
 
+		empty : function(){
+			$(this.el).empty();
+		},
+
+		emptyItems : function(){
+			this.options.models.each(function(rss){
+				rss.trigger('emptyItems');
+			});			
+		},
+
+		readmoreCurrentRss : function(){
+			console.log('read more rss works');
+			this.emptyItems();
 		}
-			
+
 	});
 
 	window.RssView = Backbone.View.extend({
@@ -86,8 +108,9 @@
 		},
 
 		initialize: function(){
-			_.bindAll(this, 'render', 'add', 'readmore');
+			_.bindAll(this, 'render', 'add', 'readmore', 'emptyItems');
 			this.model.bind('change', this.render);
+			this.model.bind('emptyItems', this.emptyItems);
 			this.initializeTemplate();
 		},
 
@@ -99,6 +122,10 @@
 			$(this.el).html(this.template(this.model.toJSON()));
 			$(this.el).attr('id', 'rss-' + this.model.cid);
 			return this;
+		},
+
+		emptyItems : function(){
+			$('.items', this.el).empty();
 		},
 	
 		add : function(){
@@ -123,6 +150,7 @@
 
 					this.collection.add(item);
 				});
+				model.trigger('change:readmoreCurrentRss', model);
 				this.collection.trigger('select', model);
 			});	
 		},
@@ -150,30 +178,42 @@
 	window.ItemView = Backbone.View.extend({
 		template: "#item-template",
 		tagName: 'li',
-		classname: 'item',
+		className: 'item',
 
 		events: {
-			
+			'click .item .content-snippet'	:  'fullText'
 		},
 		
 		initialize: function(){
-			_.bindAll(this, 'render');
+			_.bindAll(this, 'render', 'fullText');
 			this.template = _.template($(this.template).html());
 		},
 
 		render: function(){
 			$(this.el).html(this.template(this.model.toJSON()));
+			this.hideContent();
 			return this;
 		},
+
+		hideContent : function(){
+			$('.content', this.el).attr('style', 'display:none');
+		},
+	
+		fullText : function() {
+			console.log("trigger fullText");
+			this.model.trigger('change:fullTextCurrentItem', this.model);
+			$('.content', this.el).attr('style', 'display:')	
+		}
 	});
 
 	window.ItemsView = Backbone.View.extend({
 		template: _.template("<ul id='item-list'></ul>"),
 		
 		initialize : function(){
-			_.bindAll(this, 'render', 'showItems');
+			_.bindAll(this, 'render', 'showItems', 'fullTextCurrentItem');
 			this.items = this.options.items;
 			this.items.bind('select', this.showItems);
+			this.items.bind('change:fullTextCurrentItem', this.fullTextCurrentItem);
 		},
 
 		render : function(){
@@ -193,6 +233,11 @@
 		showItems : function(rss){
 			$('.items', '#rss-' + rss.cid).empty();
 			$('.items', '#rss-' + rss.cid).append(this.render().el);
+		},
+
+		fullTextCurrentItem : function(item){
+			console.log("works", item);
+			$('.content', this.el).attr('style', 'display:none');
 			
 		}
 
@@ -206,13 +251,13 @@
 		initialize:function(){
 			this.keyWord = new KeyWord();
 			this.keyWordView = new KeyWordView({model:this.keyWord});
-			this.rssListView = new RssListView();
+			//this.rssListView = new RssListView();
 		},
 
 		home: function(){
 			$('#container').empty();
 			$('#container').append(this.keyWordView.render().el);	
-			$('#container').append(this.rssListView.render().el);	
+			//$('#container').append(this.rssListView.render().el);	
 		},
 	})
 
