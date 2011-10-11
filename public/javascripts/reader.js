@@ -6,6 +6,8 @@
 	window.KeyWordView = Backbone.View.extend({
 		template: _.template("<input id='key-word' placeholder='What do you want to read?' type='text' />"),
 		
+		className: 'keyword',
+	
 		events: {
 			"keypress #key-word"			:	"search"
 		},
@@ -59,7 +61,9 @@
 	
 	window.RssListView = Backbone.View.extend({
 			
-		template: _.template("<div id='search-result'><ul id='rss-list'></ul></div>"),
+		template: _.template("<ul id='rss-list'></ul>"),
+
+		className: 'search-result',
 
 		initialize: function(){
 			_.bindAll(this, 'render', 'readmoreCurrentRss');
@@ -81,7 +85,7 @@
 		},
 
 		empty : function(){
-			$('#search-result').empty();
+			$('.search-result').remove();
 		},
 
 		emptyItems : function(){
@@ -99,7 +103,9 @@
 
 	window.RssView = Backbone.View.extend({
 		template: "#rss-template",
+
 		tagName: 'li',
+
 		className: 'rss',
 		
 		events: {
