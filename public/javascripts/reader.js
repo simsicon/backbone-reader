@@ -61,7 +61,7 @@
 	
 	window.RssListView = Backbone.View.extend({
 			
-		template: _.template("<ul id='rss-list'></ul>"),
+		template: _.template("<ol id='rss-list'></ol>"),
 
 		className: 'search-result',
 
@@ -109,8 +109,8 @@
 		className: 'rss',
 		
 		events: {
-			'click button.add' : 'add',
-			'click button.read-more' : 'readmore'
+			'click button#add' : 'add',
+			'click button#readmore' : 'readmore'
 		},
 
 		initialize: function(){

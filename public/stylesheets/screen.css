@@ -1,0 +1,25 @@
+
+.container{
+	margin-top: 20px;	
+}
+
+.keyword {
+	width: 100%;
+ 	text-align: center;
+}
+
+input#key-word {
+	display: inline-block;
+	width: 50%;
+	height: 30px;
+	font-size: 25px;
+}
+
+ol li.rss {
+	width: 100%;
+	float: left;
+}
+
+ol li.rss .title {
+	background-color: #CEECF5;
+}

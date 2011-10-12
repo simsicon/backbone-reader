@@ -6,6 +6,7 @@
     <meta name="author" content="simsicon@gmail.com">
 
     <link rel="stylesheet" href="stylesheets/screen.css" media="screen, projection">
+    <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
 
     <script src="javascripts/vendor/modernizr.min.js"></script>
     <script src="javascripts/vendor/jquery-1.6.4.js"></script>
@@ -14,13 +15,16 @@
     <script src="javascripts/reader.js"></script>
 
     <script type="text/template" id="rss-template">
-	  <div class='rss-list'>
-      	<button class="add">add</button>
-      	<button class="read-more">read more</button>
-      	<span class="title"><%= title %></span>
-      	<span class="content-snippet"><%= contentSnippet %></span>
-	  	<div class='items'></div>
-	  </div>
+		<div class='row'>
+      		<button class="btn small primary" id='add' >Add</button>
+      		<button class="btn small info" id='readmore'>Read More</button>
+      		<span class="title"><h6><%= title %></h6></span>
+		</div>
+
+		<div class='row'>
+      		<span class="content-snippet"><%= contentSnippet %></span>
+	  		<div class='items'></div>
+		</div>
     </script>
 
 	<script type="text/template" id="item-template">
@@ -37,7 +41,7 @@
   </head>
 
   <body>
-    <div id="container">
+    <div id="container" class='container'>
     </div>
   </body>
 </html>
