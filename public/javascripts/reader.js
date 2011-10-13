@@ -35,7 +35,7 @@
 				var rssListView = new RssListView({models:this.collection});
 				//$('#rss-list').empty();
 				rssListView.empty();
-				$('#container').append(rssListView.render().el);
+				$('.searchresult-section').append(rssListView.render().el);
 				
 			});
 			
@@ -53,12 +53,18 @@
 	});
 
 
-	window.Rss = Backbone.Model.extend({});
+	window.Rss = Backbone.Model.extend({
+	});
 
 	window.RssList = Backbone.Collection.extend({
-		model: Rss
+		model: Rss,
+
+		localStorage : new window.Store('addedRss')
 	});
 	
+	
+	this.addedRss = new RssList();  
+
 	window.RssListView = Backbone.View.extend({
 			
 		template: _.template("<ol id='rss-list'></ol>"),
@@ -135,6 +141,7 @@
 		},
 	
 		add : function(){
+			this.model.save();	
 			console.log("add", this.model);
 		},
 
@@ -249,21 +256,93 @@
 
 	});
 
+	window.ItemPool = Backbone.Collection.extend({
+		model:Item,
+
+		
+	});
+
+
+	window.SectionView = Backbone.View.extend({
+
+		tagName: 'div',
+		
+		initialize : function(){
+			_.bindAll(this, 'render');
+		},
+
+		render : function(){
+			return this;
+		}
+	});
+
+
+	window.KeywordSectionView = SectionView.extend({
+		className: 'keyword-section',
+
+		render : function() {
+			this.keyWord = new KeyWord();
+			this.keyWordView = new KeyWordView({model:this.keyWord});
+			$(this.el).append(this.keyWordView.render().el);	
+			return this;
+		}
+
+	});
+
+	window.SearchResultSectionView = SectionView.extend({
+		className: 'searchresult-section'
+	});
+
+	window.ItemPoolSectionView = SectionView.extend({
+		className: 'itempool-section',
+	
+		initialize : function(){
+			_.bindAll(this, 'render');
+			addedRss.fetch();
+		},
+	
+		render : function() {
+			this.items = new Items();
+			this.itemPoolView = new ItemPoolView();
+			$(this.el).append(this.itemPoolView.render().el);	
+			return this;
+		}
+	});
+
+	window.ItemPoolView = Backbone.View.extend({
+		className: 'item-pool',
+
+		tagName: 'ul',
+		
+		initialize : function(){
+			_.bindAll(this, 'render');
+			this.items = this.options.items;
+		},
+
+		render : function(){
+			return this;
+		}
+	})
+
+
 	window.BackboneReader = Backbone.Router.extend({
 		routes:{
 			'':	'home'
 		},
 
 		initialize:function(){
-			this.keyWord = new KeyWord();
-			this.keyWordView = new KeyWordView({model:this.keyWord});
-			//this.rssListView = new RssListView();
+			this.keyWordSection = new KeywordSectionView();
+			this.searchResultSection = new SearchResultSectionView();
+			this.itemPoolSection = new ItemPoolSectionView();
 		},
 
 		home: function(){
 			$('#container').empty();
-			$('#container').append(this.keyWordView.render().el);	
-			//$('#container').append(this.rssListView.render().el);	
+			$('#container').append(this.keyWordSection.render().el);	
+			$('#container').append(this.searchResultSection.render().el);	
+			$('#container').append(this.itemPoolSection.render().el);	
+
+
 		},
 	})
 
